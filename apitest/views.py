@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q, Avg, Prefetch
 
 from .models import Movie, Vote, Review, Comment
-from .serializers import UserProfileSerializer, VoteUpdateSerializer, VoteCreateSerializer, CommentSerializer, ReviewDetailSerializer, ReviewVagueSerializer, MovieDetailSerializer, MovieVagueSerializer
+from .serializers import UserProfileSerializer, VoteUpdateSerializer, VoteCreateSerializer, CommentSerializer, ReviewDetailSerializer, ReviewVagueSerializer, MovieDetailSerializer, MovieVagueSerializer, RegistrationSerializer
 from .permissions import IsOwnerOrReadOnly, IsStaffOrReadOnly
 
 from rest_framework.decorators import api_view
@@ -104,7 +104,10 @@ class UpdateVoteView(generics.RetrieveUpdateAPIView):
 
 # --------------------------------
 
-
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = RegistrationSerializer
+    
 
 # def loginPage(request):
 #     if request.method == 'POST':
@@ -125,17 +128,3 @@ class UpdateVoteView(generics.RetrieveUpdateAPIView):
 
 # def logoutUser(request):
 #     logout(request)
-
-# def registerUser(request):
-#     form = CustomUserCreationForm()
-#     if request.method == 'POST':
-#         form = CustomUserCreationForm(request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             login(request, user)
-#             return redirect('home-page')
-#         else:
-#             messages.error(request, 'an error occured')
-
-#     context = {'form': form}
-#     return render(request, 'apitest/login_register.html', context)

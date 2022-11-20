@@ -5,6 +5,7 @@ urlpatterns = [
     path('', views.main, name="main"),
 
     path('user/<str:pk>/', views.UserView.as_view()),
+    path('users/', views.RegisterView.as_view()),
 
     path('movie/<str:pk>/', views.MovieInstanceView.as_view()),
     path('movies/', views.MovieListView.as_view()),
