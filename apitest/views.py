@@ -107,24 +107,6 @@ class UpdateVoteView(generics.RetrieveUpdateAPIView):
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegistrationSerializer
-    
-
-# def loginPage(request):
-#     if request.method == 'POST':
-#         username = request.POST.get('username')
-#         password = request.POST.get('password')
-
-#         try:
-#             user = User.objects.get(username = username)
-#         except:
-#             messages.error(request, 'User does not exist')
-
-#         user = authenticate(request, username=username, password=password)
-
-#         if user:
-#             login(request, user)
-#         else:
-#             messages.error(request, 'Username or password does not exist') 
 
 # def logoutUser(request):
 #     logout(request)
