@@ -10,14 +10,34 @@ from rest_framework.response import Response
 from rest_framework import serializers, generics
 from rest_framework.permissions import IsAuthenticated
 
+from django.middleware.csrf import get_token
 from django.contrib.auth import authenticate, login, logout
 
 # TODO: bez .order_by, nawet z sortowaniem w modelu, nie uzywane to jest
+import json
 
 @api_view(["GET"])
 def main(request):
     return Response({"detail": "main"}, status=200)
 
+@api_view(["GET"])
+def get_csrf_token(request):
+    return Response({"detail": "CSRF cookie retrieved."}, headers={"X-CSRFToken": get_token(request)})
+
+@api_view(["POST"])
+def login_view(request):
+    data = json.loads(request.body)
+    username = data.get('username')
+    password = data.get('password')
+    user = authenticate(username=username, password=password)
+    if not user:
+        return Response({"detail": "user does not exist or wrong password"}, status=400)
+    login(request, user)
+    return Response({"detail": "User has been logged in.", "username": username}, status=200)
+
+@api_view(["POST"])
+def logout_view(request):
+    logout(request)
 
 class MovieListView(generics.ListCreateAPIView):
     queryset = Movie.objects.all().annotate(avg_rating=Avg('movie_reviews__rating_value')).order_by('-updated', '-added')
@@ -107,6 +127,15 @@ class UpdateVoteView(generics.RetrieveUpdateAPIView):
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegistrationSerializer
+
+
+class MyUserView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
 
 # def logoutUser(request):
 #     logout(request)

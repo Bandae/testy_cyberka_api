@@ -3,8 +3,12 @@ from . import views
 
 urlpatterns = [
     path('', views.main, name="main"),
+    path('csrf/', views.get_csrf_token),
+    path('login/', views.login_view),
+    path('logout/', views.logout_view),
 
     path('user/<str:pk>/', views.UserView.as_view()),
+    path('user-me/', views.MyUserView.as_view()),
     path('users/', views.RegisterView.as_view()),
 
     path('movie/<str:pk>/', views.MovieInstanceView.as_view()),
