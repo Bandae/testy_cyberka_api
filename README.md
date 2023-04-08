@@ -1,1 +1,50 @@
+# A movie rating website with django RF and vue (in progress)
+
+Will feature a database of movies, which users can review and rate. Reviews can be commented and up/downvoted. The site's intended use is for closed groups to rate and compare movies they have watched.
+
+### [Frontend repository link](https://github.com/Bandae/cyberka_front)
+
+## Next steps:
+
+- finish loggin/authentication functionality (registration, logging out)
+- complete CRUD for reviews, comments, votes
+- clean up axios requests
+- add profile pages, forgot password
+- allow creating and updating movies
+- enforce permissions, movies - staff, reviews etc. - authorized users
+- styling
+
+### Possible features for later development:
+
+- web scraping to make addding movies to the database easier.
+- user profiles with statistics (the average rating, total up/downvote balance of all reviews, all watched movies etc.)
+- _more to be added_
+
+## Initial design:
+
+### Main page:
+
+![Main_page](https://user-images.githubusercontent.com/76438366/230723632-a8cd2159-ff33-4596-9aed-82446ba1903e.svg)
+
+### Movie detail page:
+
+![Movie_page](https://user-images.githubusercontent.com/76438366/230723653-5eae627d-fac8-409b-87e6-be10e6a1d333.svg)
+
+## Setup
+
+### DRF
+
+```sh
+python -m venv .venv
+.\.venv\scripts\activate
+python -m pip install -r requirements.txt
 python manage.py migrate --run-syncdb
+python manage.py runserver
+```
+
+### vue
+
+```sh
+npm install
+npm run dev
+```
