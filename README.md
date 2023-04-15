@@ -6,9 +6,9 @@ Will feature a database of movies, which users can review and rate. Reviews can 
 
 ## Next steps:
 
-- finish loggin/authentication functionality (registration, logging out)
+- ✅<s>finish loggin/authentication functionality (registration, logging out)</s>
 - complete CRUD for reviews, comments, votes
-- clean up axios requests
+- ✅<s>clean up axios requests</s>
 - add profile pages, forgot password
 - allow creating and updating movies
 - enforce permissions, movies - staff, reviews etc. - authorized users

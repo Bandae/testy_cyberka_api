@@ -38,6 +38,7 @@ def login_view(request):
 @api_view(["POST"])
 def logout_view(request):
     logout(request)
+    return Response({"detail": "user has been logged out."})
 
 class MovieListView(generics.ListCreateAPIView):
     queryset = Movie.objects.all().annotate(avg_rating=Avg('movie_reviews__rating_value')).order_by('-updated', '-added')

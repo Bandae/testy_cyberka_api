@@ -139,5 +139,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
         try:
             password_validators.validate_password(value)
         except ValidationError as exc:
-            raise serializers.ValidationError(str(exc))
+            errors = [ i for i in exc ]
+            raise serializers.ValidationError(errors)
         return value
