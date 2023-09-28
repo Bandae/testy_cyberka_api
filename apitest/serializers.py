@@ -37,7 +37,7 @@ class VoteCreateSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['user', 'review', 'body', 'created']
+        fields = ['id', 'user', 'review', 'body', 'created']
         read_only_fields = ['user']
 
 
@@ -45,10 +45,12 @@ class ReviewVagueSerializer(serializers.ModelSerializer):
     total_vote = serializers.SerializerMethodField(read_only=True)
     comment_count = serializers.SerializerMethodField(read_only=True)
     body_short = serializers.SerializerMethodField(read_only=True)
-
+    username = serializers.SerializerMethodField(read_only=True)
+    comments = CommentSerializer(read_only=True, many=True)
+    
     class Meta:
         model = Review
-        fields = ['user', 'movie', 'body', 'body_short', 'rating_value', 'updated', 'created', 'total_vote', 'comment_count']
+        fields = ['id', 'user', 'username', 'movie', 'body', 'body_short', 'rating_value', 'updated', 'created', 'total_vote', 'comment_count', 'comments']
         read_only_fields = ['user']
         write_only_fields = ['body']
         extra_kwargs = {'user': {'default': serializers.CurrentUserDefault()}}
@@ -64,6 +66,9 @@ class ReviewVagueSerializer(serializers.ModelSerializer):
     
     def get_body_short(self, obj):
         return obj.__str__()
+
+    def get_username(self, obj):
+        return obj.user.username
     
     def validate_rating_value(self, rating_value):
         if rating_value < 1 or rating_value > 10:
@@ -73,11 +78,12 @@ class ReviewVagueSerializer(serializers.ModelSerializer):
 
 class ReviewDetailSerializer(serializers.ModelSerializer):
     total_vote = serializers.SerializerMethodField(read_only=True)
+    username = serializers.SerializerMethodField(read_only=True)
     comments = CommentSerializer(read_only=True, many=True)
 
     class Meta:
         model = Review
-        fields = ['user', 'movie', 'body', 'rating_value', 'updated', 'created', 'total_vote', 'comments']
+        fields = ['id', 'user', 'username', 'movie', 'body', 'rating_value', 'updated', 'created', 'total_vote', 'comments']
         read_only_fields = ['user', 'movie']
         extra_kwargs = {'user': {'default': serializers.CurrentUserDefault()}}
         validators = [
@@ -86,6 +92,9 @@ class ReviewDetailSerializer(serializers.ModelSerializer):
     
     def get_total_vote(self, obj):
         return obj.total_vote()
+
+    def get_username(self, obj):
+        return obj.user.username
     
     def validate_rating_value(self, rating_value):
         if rating_value < 1 or rating_value > 10:
@@ -100,7 +109,7 @@ class MovieVagueSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Movie
-        exclude = ['id', 'updated', 'added']
+        exclude = ['updated', 'added']
 
 
 class MovieDetailSerializer(serializers.ModelSerializer):
@@ -110,7 +119,7 @@ class MovieDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Movie
-        exclude = ['id', 'user_added', 'updated', 'added']
+        exclude = ['user_added', 'updated', 'added']
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -118,7 +127,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'user_reviews']
+        fields = ['id', 'username', 'user_reviews']
 
 
 class RegistrationSerializer(serializers.ModelSerializer):

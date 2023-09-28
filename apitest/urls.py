@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 urlpatterns = [
@@ -16,6 +16,7 @@ urlpatterns = [
 
     path('votes/', views.CreateVoteView.as_view()),
     path('vote/<str:pk>/', views.UpdateVoteView.as_view()),
+    re_path('myvote/review=(?P<review_id>.+)/$', views.MyVoteView.as_view()),
 
     path('reviews/', views.ReviewListView.as_view()),
     path('review/<str:pk>/', views.ReviewInstanceView.as_view()),

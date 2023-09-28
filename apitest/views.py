@@ -123,6 +123,15 @@ class UpdateVoteView(generics.RetrieveUpdateAPIView):
     serializer_class = VoteUpdateSerializer
     permission_classes = [IsOwnerOrReadOnly]
 
+
+class MyVoteView(generics.ListAPIView):
+    serializer_class = VoteUpdateSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        review_id = self.kwargs['review_id']
+        return Vote.objects.filter(user=user, review=review_id)
+
 # --------------------------------
 
 class RegisterView(generics.CreateAPIView):
