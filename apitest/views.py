@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.db.models import Q, Avg, Prefetch
+from django.db.models import Q, Avg, Prefetch, Count
 
 from .models import Movie, Vote, Review, Comment
 from .serializers import UserProfileSerializer, VoteUpdateSerializer, VoteCreateSerializer, CommentSerializer, ReviewDetailSerializer, ReviewVagueSerializer, MovieDetailSerializer, MovieVagueSerializer, RegistrationSerializer
@@ -41,7 +41,7 @@ def logout_view(request):
     return Response({"detail": "user has been logged out."})
 
 class MovieListView(generics.ListCreateAPIView):
-    queryset = Movie.objects.all().annotate(avg_rating=Avg('movie_reviews__rating_value')).order_by('-updated', '-added')
+    queryset = Movie.objects.all().annotate(avg_rating=Avg('movie_reviews__rating_value')).annotate(review_amount=Count('movie_reviews')).order_by('-updated', '-added')
     serializer_class = MovieVagueSerializer
     permission_classes = [IsStaffOrReadOnly]
     ordering = ['-updated', '-added']

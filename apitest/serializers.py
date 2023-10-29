@@ -35,10 +35,15 @@ class VoteCreateSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Comment
-        fields = ['id', 'user', 'review', 'body', 'created']
+        fields = ['id', 'user', 'username','review', 'body', 'created']
         read_only_fields = ['user']
+    
+    def get_username(self, obj):
+        return obj.user.username
 
 
 class ReviewVagueSerializer(serializers.ModelSerializer):
@@ -104,6 +109,7 @@ class ReviewDetailSerializer(serializers.ModelSerializer):
 
 class MovieVagueSerializer(serializers.ModelSerializer):
     avg_rating = serializers.FloatField(read_only=True) # this uses an annotated field
+    review_amount = serializers.IntegerField(read_only=True) # this uses an annotated field
     user_added = serializers.HiddenField(default=serializers.CurrentUserDefault())
     user_last_updated = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
@@ -127,7 +133,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'user_reviews']
+        fields = ['id', 'username', 'is_staff', 'user_reviews']
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
