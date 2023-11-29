@@ -85,10 +85,11 @@ class ReviewDetailSerializer(serializers.ModelSerializer):
     total_vote = serializers.SerializerMethodField(read_only=True)
     username = serializers.SerializerMethodField(read_only=True)
     comments = CommentSerializer(read_only=True, many=True)
+    current_user_vote = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Review
-        fields = ['id', 'user', 'username', 'movie', 'body', 'rating_value', 'updated', 'created', 'total_vote', 'comments']
+        fields = ['id', 'user', 'username', 'movie', 'body', 'rating_value', 'updated', 'created', 'total_vote', 'comments', 'current_user_vote']
         read_only_fields = ['user', 'movie']
         extra_kwargs = {'user': {'default': serializers.CurrentUserDefault()}}
         validators = [
@@ -100,6 +101,18 @@ class ReviewDetailSerializer(serializers.ModelSerializer):
 
     def get_username(self, obj):
         return obj.user.username
+    
+    def get_current_user_vote(self, obj):
+        # CurrentUserDefault() ???
+        user = None
+        request = self.context.get("request")
+        if request and hasattr(request, "user"):
+            user = request.user
+        if user is None or user.is_anonymous:
+            return None
+        qs = Vote.objects.filter(user=user, review=obj)
+        data = VoteUpdateSerializer(instance=qs, many=True).data
+        return data[0] if data else None
     
     def validate_rating_value(self, rating_value):
         if rating_value < 1 or rating_value > 10:

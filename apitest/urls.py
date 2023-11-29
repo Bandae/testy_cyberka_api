@@ -13,6 +13,7 @@ urlpatterns = [
 
     path('movie/<str:pk>/', views.MovieInstanceView.as_view()),
     path('movies/', views.MovieListView.as_view()),
+    re_path('movies/title_pl=(?P<title_pl>.*)&title_eng=(?P<title_eng>.*)&year=(?P<year>.*)&director=(?P<director>.*)/', views.MovieListView.as_view()),
 
     path('votes/', views.CreateVoteView.as_view()),
     path('vote/<str:pk>/', views.UpdateVoteView.as_view()),

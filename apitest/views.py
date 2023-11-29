@@ -48,18 +48,16 @@ class MovieListView(generics.ListCreateAPIView):
 
     def get_queryset(self, *args, **kwargs):
         queryset = super().get_queryset(*args, **kwargs)
-        q = self.request.GET.get('q') if self.request.GET.get('q') != None else ''
-        if q is None:
-            return queryset
+        title_pl = self.kwargs.get('title_pl') if self.kwargs.get('title_pl') != None else ''
+        title_eng = self.kwargs.get('title_eng') if self.kwargs.get('title_eng') != None else ''
+        year = self.kwargs.get('year') if self.kwargs.get('year') != None else ''
+        director = self.kwargs.get('director') if self.kwargs.get('director') != None else ''
         
         results = queryset.filter(
-            Q(title_pl__icontains=q)|
-            Q(title_eng__icontains=q)|
-            Q(director__icontains=q)|
-            Q(writer__icontains=q)|
-            Q(star1__icontains=q)|
-            Q(star2__icontains=q)|
-            Q(star3__icontains=q)
+            Q(title_pl__icontains=title_pl)&
+            Q(title_eng__icontains=title_eng)&
+            Q(year__icontains=year)&
+            Q(director__icontains=director)
         )
         return results
 
@@ -88,6 +86,12 @@ class ReviewInstanceView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all().prefetch_related(Prefetch('comments'))
     serializer_class = ReviewDetailSerializer
     permission_classes = [IsOwnerOrReadOnly]
+
+    # def get_queryset(self, *args, **kwargs):
+    #     queryset = super().get_queryset(*args, **kwargs)
+    #     if self.request.user.is_anonymous:
+    #         return queryset
+    #     return queryset.prefetch_related(Prefetch('user_voted', queryset=Vote.objects.filter(user=self.request.user)))
 
 
 class CommentListView(generics.CreateAPIView):
