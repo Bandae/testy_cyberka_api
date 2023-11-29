@@ -83,13 +83,14 @@ class ReviewVagueSerializer(serializers.ModelSerializer):
 
 class ReviewDetailSerializer(serializers.ModelSerializer):
     total_vote = serializers.SerializerMethodField(read_only=True)
+    comment_count = serializers.SerializerMethodField(read_only=True)
     username = serializers.SerializerMethodField(read_only=True)
     comments = CommentSerializer(read_only=True, many=True)
     current_user_vote = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Review
-        fields = ['id', 'user', 'username', 'movie', 'body', 'rating_value', 'updated', 'created', 'total_vote', 'comments', 'current_user_vote']
+        fields = ['id', 'user', 'username', 'movie', 'body', "comment_count", 'rating_value', 'updated', 'created', 'total_vote', 'comments', 'current_user_vote']
         read_only_fields = ['user', 'movie']
         extra_kwargs = {'user': {'default': serializers.CurrentUserDefault()}}
         validators = [
@@ -101,6 +102,9 @@ class ReviewDetailSerializer(serializers.ModelSerializer):
 
     def get_username(self, obj):
         return obj.user.username
+
+    def get_comment_count(self, obj):
+        return obj.comment_count()
     
     def get_current_user_vote(self, obj):
         # CurrentUserDefault() ???
@@ -133,7 +137,7 @@ class MovieVagueSerializer(serializers.ModelSerializer):
 
 class MovieDetailSerializer(serializers.ModelSerializer):
     avg_rating = serializers.FloatField(read_only=True) # this uses an annotated field
-    movie_reviews = ReviewVagueSerializer(read_only=True, many=True)
+    movie_reviews = ReviewDetailSerializer(read_only=True, many=True)
     user_last_updated = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
