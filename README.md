@@ -14,8 +14,9 @@ Will feature a database of movies, which users can review and rate. Reviews can 
 - ✅<s>add profile pages</s>
 - ✅<s>allow creating and updating movies</s>
 - ✅<s>enforce permissions, movies - staff, reviews etc. - authorized users</s>
-- change review serializer, get users vote for every comment to allow styling vote buttons
-- styling
+- ✅<s>change review serializer, get users vote for every comment to allow styling vote buttons</s>
+- ✅<s>styling</s>
+- allow uploading movie thumbnails / posters
 
 ### Possible features for later development:
 
