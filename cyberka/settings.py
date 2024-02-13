@@ -15,7 +15,7 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+VUE_DIR = BASE_DIR / 'frontend'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -26,10 +26,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-06t==b5tpk(u5n*-w=%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', '') != 'False'
 
-ALLOWED_HOSTS = [
-    'https://bandae.pythonanywhere.com',
-    'https://rad-taiyaki-726377.netlify.app'
-]
+ALLOWED_HOSTS = ['bandae.pythonanywhere.com']
 
 # Application definition
 
@@ -61,6 +58,8 @@ ROOT_URLCONF = 'cyberka.urls'
 
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = False
 SESSION_COOKIE_HTTPONLY = True
 
@@ -70,9 +69,12 @@ LOCAL_HOSTS = [
     'http://127.0.0.1:5173',
     'https://127.0.0.1:5173',
 ]
+ORIGINS = [
+    'https://bandae.pythonanywhere.com',
+]
 
-CSRF_TRUSTED_ORIGINS = ALLOWED_HOSTS
-CORS_ALLOWED_ORIGINS = ALLOWED_HOSTS
+CSRF_TRUSTED_ORIGINS = ORIGINS
+CORS_ALLOWED_ORIGINS = ORIGINS
 if DEBUG:
     CSRF_TRUSTED_ORIGINS += LOCAL_HOSTS
     CORS_ALLOWED_ORIGINS += LOCAL_HOSTS
@@ -85,6 +87,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             BASE_DIR / 'templates',
+            VUE_DIR / 'dist',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -111,6 +114,9 @@ DATABASES = {
         'USER': 'Bandae',
         'PASSWORD': os.getenv('DJANGO_DB_PASS'),
         'HOST': 'Bandae.mysql.pythonanywhere-services.com',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        },
     }
 }
 if DEBUG:
@@ -159,6 +165,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = [
+    VUE_DIR / 'dist/static',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
